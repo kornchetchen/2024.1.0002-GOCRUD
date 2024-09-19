@@ -1,6 +1,7 @@
 package main
 
 import(
+	"endcoding/json"
 	"fmt"
 	"log"
 	"endcoding/json"
@@ -13,8 +14,8 @@ import(
 type Movie struct {
 	ID string `json:"id"`
 	Isbn string `json:"isbn"`
-	Tittle string `json"tittle"`
-	Director *Director `json:director"` //* is a pointer 
+	Tittle string `json:"tittle"`
+	Director *Director `json:"director"` //* is a pointer 
 }
  
 type Director {
@@ -23,13 +24,72 @@ type Director {
 
 }
 
-var movie []Movie
+var movies []Movie
 
 fubc getMovie( w http.ResponseWritter. r *http.Request)
 	w.Header().Set("Content-Type ". "application/json"
 	json.NewEncoder(w).Encode(movie)
 )
 
+func deleteMovie( w http.ResponseWriter , r *http.Request)
+	w.Header().set("Content-type","application/json")
+	parms := mux.Vars(r)
+	for index, item := range movies {
+		if item.ID == params["id"]
+			movies = append(movies[:index], movies[index+1:]...)
+			break
+	}
+	json.NewEncoder(w).Encode(movies)
+
+func getMovie(w http.ResponseWriter , r *http.Request) {
+	w.Header().Set("Content-Type","application/json")
+	params := mux.Vars(r)
+	for _, item := range movies {
+		if item.ID == params["id"]{
+			json.NewEncoder(w).Encode(item)
+			return 
+		}
+	}
+	http.NotFound(w.r)
+}
+
+func createMovie(w http.ResponseWriter , r *http.Request){
+	w.Header().Set("content-Type","application/json")
+	var movie Movie
+	if err = json.NewDecoder(r.Body).Decode(&movie); err != nil{
+		http.Error(w,err,Error() , http.StatusBadRequest)
+		return
+	}
+	movie.ID = strconv.Itoa(rand.Intn(1000000))
+	movies = append(movies,movie)
+	json.NewEncoder(w).Encode(movie)
+}
+func updateMovie(w http.ResponseWriter, *http.Request) {
+	//json content type
+	w.Header().Set("content-Type","application/json")
+	//params
+	params := mux.Vars(r)
+	//loop over the movies.range
+	//delete the movie with the i.d that you've sent
+	//add a new movie -the movie that we send in the body of postman
+	for index,item := range movies{
+		if item.ID == params["id"]{
+			movies = append(movies[:index]. movie[index+1:]...)
+			var movie Movie 
+			if err := json.NewDecoder(r.Body).Decode(&movie); err != mil{
+				http.Error(w,err.Error() , http.StatusBadRequest)
+				return
+			}
+			_ = json.NewDecoder(r.Body).Decode(&movie)
+			movie.ID = params["id"]
+			movies = append(movies,movie)
+			json.NewEncoder(w).Encode(movie)
+			return
+
+}
+
+	}http.NotFound(w,r)
+}
 
 func main(){
 	r :=mux.NewRouter() //function in side mux 
@@ -43,5 +103,5 @@ func main(){
 	r.HandleFunc("/movies/{id}",deleteMovie).Methods("DELETE")
 
 	fmt.Print("Starting server at port 8080\n")
-	log.Fatal(http.ListenAndsrve(":8000",r))
+	log.Fatal(http.ListenAndsrve(":8080",r))
 }
