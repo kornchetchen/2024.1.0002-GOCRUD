@@ -3,7 +3,7 @@ package main
 import(
 	"fmt"
 	"log"
-"endcoding/json"
+	"endcoding/json"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -102,5 +102,5 @@ func main(){
 	r.HandleFunc("/movies/{id}",deleteMovie).Methods("DELETE")
 
 	fmt.Print("Starting server at port 8000\n")
-	log.Fatal(http.ListenAndsrve(":8000",r))
+	log.Fatal(http.ListenAndServe(":8000",r))
 }
